@@ -1,0 +1,28 @@
+#!/bin/bash
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+	-t|--tag)
+	TAG_NAME="$2"
+	shift
+	shift
+	;;
+	-c|--command)
+	COMMAND="$2"
+	shift
+	shift
+	;;
+	-h|--help)
+	echo "Usage: sshexec --tag etcd_master"
+
+IPS="$(aws ec2 describe-instances --filters "Name=tag-key,Values=${TAG_NAME}" --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,PrivateDnsName:PrivateDnsName,State:State.Name, IP:NetworkInterfaces[0].PrivateIpAddress}' | grep IP | grep -v null | sed 's/\"IP\"\: \"//' | sed 's/\"//' | sed 's/ //g')"
+
+for i in $IPS; do 
+	ssh -i "${SSH_KEY}" -t core@"$i" "${COMMAND}"
+done
+
+

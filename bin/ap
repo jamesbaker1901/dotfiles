@@ -1,0 +1,41 @@
+#!/bin/bash
+
+host1="$1"
+user1="$2"
+
+
+if [ -z "$1" ]
+then
+	echo "Please specify a host ::"
+	cat /home/jay/.ssh/config | grep -Ei "Host" | grep -Eiv "HostName" | sed -e 's/Host\ //g' | sed ':a;N;$!ba;s/\n/, /g'
+	read prompthost
+	host=$prompthost
+else
+	host=$host1
+fi
+
+if [ -z "$2" ];
+then
+	user="jay.baker"
+	opt="-p"
+	pass="$(pass bnl/ad)"
+else
+	user=$user1
+	if [ "$user" == "root" ];
+	then
+		opt="-p"
+		pass="$(pass bnl/root)"
+
+	elif [ "$user" == "jbaker" ];
+	then
+		opt="-p"
+		pass="$(pass ncbp/jbaker)"
+	else
+    	ssh ${user}@${host}
+	exit 0
+    fi
+fi
+
+sshpass ${opt} ${pass} ssh ${user}@${host}
+
+exit 0

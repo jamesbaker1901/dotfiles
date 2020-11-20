@@ -1,0 +1,60 @@
+#!/bin/bash
+
+ctx=$(kubectl config current-context)
+search=$(kubectl get po --all-namespaces | grep $1)
+podCount=$(echo "$search" | wc -l | sed 's/^ *//')
+
+if [ "$podCount" -gt 1 ]; then
+    declare -a pods
+    while read -r line; do
+		p=$(echo "$line")
+		pods+=( "$p" )
+	done <<< "$search"
+	PS3='Please choose a pod: '
+	select opt in "${pods[@]}";
+	do
+		pod=$(echo $opt | cut -f2 -d' ')
+		namespace=$(echo $opt | cut -f1 -d' ')
+		echo "Connecting to: $pod"
+		break
+	done
+elif [ "$podCount" == 1 ]; then
+	pod=$(echo $search | cut -f2 -d' ')
+	namespace=$(echo $search | cut -f1 -d' ')
+elif [ "$podCount" == 0 ]; then
+	echo "No pods found matching $1"
+	echo "kthxbye"
+fi
+
+if [ -z "$2" ]; then
+	get=$(kubectl -n $namespace get po/$pod | tail -n 1)
+	containerCount=$(echo $get | cut -f2 -d' ' | cut -f1 -d'/')
+else
+	container="$2"
+fi
+
+if [[ "$containerCount" -gt 1 ]]; then
+	declare -a containers
+	describe=$(kubectl -n $namespace get po/$pod -o json)
+	for ((i = 0; i < $containerCount; i++)); do
+		containers+=( "$(echo $describe | jq -r .spec.containers[$i].name)" )
+	done
+	if [[ "${containers[0]}" == "master" ]]; then
+		container="master"
+	else
+		PS3='Please choose a container: '
+		select opt in "${containers[@]}";
+		do
+			container=$opt
+			break
+		done
+	fi
+elif [[ "$containerCount" == 1 ]]; then
+	container=$(kubectl -n $namespace get po/$pod -o json | jq -r .spec.containers[0].name)
+fi
+
+echo "Connecting to $1 ... "
+echo "k8s context: $ctx"
+echo "pod: $pod"
+echo "container: $container"
+kubectl -n $namespace exec -it $pod -c=$container -- /bin/sh #-c "${cmd}"

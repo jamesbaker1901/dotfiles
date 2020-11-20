@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# switch aws and kubectl region/context, etc
+sr(){
+    export GOPS1_CTX=true
+    REGION=""
+    PROFILE=""
+    CONTEXT=""
+    NAMESPACE=""
+    if [ -n "$1" ]; then
+        case "$1" in
+	dev)
+	REGION="us-west-2"
+    	PROFILE=dev
+	CONTEXT=dev
+	;;
+        test)
+        REGION="us-west-2"
+        CONTEXT=test
+        PROFILE=test
+        ;;
+	tools|tool)
+	REGION="us-west-2"
+	CONTEXT="tools"
+	PROFILE="tools"
+	;;
+	prod)
+	REGION="us-west-2"
+	CONTEXT=prod
+	PROFILE=prod
+	;;
+        prod-us)
+        REGION="us-west-2"
+        PROFILE=prod
+        CONTEXT=prod
+        ;;
+        prod-eu)
+        REGION="eu-central-1"
+        PROFILE=prod-eu
+        CONTEXT=prod-eu
+        ;;
+        prod-ap)
+        REGION="ap-southeast-2"
+        PROFILE=prod-ap
+        CONTEXT=prod-ap
+        ;;
+	rancher2)
+	REGION="us-west-2"
+	PROFILE=dev
+	CONTEXT=rancher2
+	;;
+	off|none)
+	export GOPS1_CTX=false
+	;;
+        *)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=dev
+        ;;
+        esac
+    fi
+
+    if [ -z $PROFILE ]; then
+	    PROFILE=dev
+	    REGION="us-west-2"
+	    CONTEXT=dev
+    fi
+
+    export AWS_DEFAULT_REGION=$REGION
+    export AWS_PROFILE=$PROFILE
+
+    if [ -n "$2" ];
+    then
+	NAMESPACE=${2}
+	kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
+	kubectl config use-context $CONTEXT &>/dev/null 
+    else
+	if [ -n "$NAMESPACE" ]; then
+	       NAMESPACE=""
+       	fi
+    	kubectl config use-context $CONTEXT &>/dev/null
+    fi
+}

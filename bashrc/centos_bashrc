@@ -1,0 +1,84 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+#=================================#
+#=========personal alias==========#
+#=================================#
+
+##nah uh uh, you didn't say the magic word :)
+alias please='sudo $(fc -nl -1)'
+alias snano='sudo nano'
+alias sv='sudo vim'
+alias update='sudo yum update'
+alias ins='sudo yum -y install'
+alias wp-update='sudo /home/jay/Scripts/wp.upgrade.sh'
+
+##reboot, logout, etc.
+alias rbt='sudo shutdown -r now'
+alias shutdown='sudo shutdown now'
+
+#SystemD
+alias sd='sudo systemctl'
+alias daemon-reload='sudo systemctl daemon-reload'
+
+## start up scripts
+alias bashrc='vim ~/.bashrc'
+alias sbash='source /home/jay/.bashrc'
+
+## change directory and copy commands
+alias ..='cd ..'
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias rsm='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files'
+alias rcopy='rsync --partial --progress --append --rsh=ssh -r -h'
+alias ls='ls --color=auto'
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+# default PS1
+#PS1='(\u:\h), \W, '
+
+#Fancy PS1#
+PS1='\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)\n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$ '
+
+
+#
+# extract script: just type extract *, where * is a compressed file
+#
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+## change directory, then list files
+cdls(){
+    builtin cd "$@"
+    if [[ $(ls | wc -l) -gt 60 ]] ; then
+        echo -e "\E[1;38;5;125m(too many files)\E[0m"
+    else
+        ls
+    fi
+}

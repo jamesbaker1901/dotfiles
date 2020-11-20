@@ -1,0 +1,59 @@
+# GBT prompt
+export GBT_CARS='Os, Hostname, Dir, Git, Custom, Kubectl, Time, Status, Sign'
+export GBT_SEPARATOR=""
+export GBT_BEGINNING_TEXT='┌─'
+export GBT_BEGINNING_FG='6;153;221'
+export GBT_CAR_STATUS_BG='default'
+
+export GBT_CAR_OS_BG='default'
+export GBT_CAR_OS_FORMAT='[{{ Symbol }} '
+export GBT_CAR_OS_FG='210;210;210'
+
+export GBT_CAR_HOSTNAME_BG='default'
+export GBT_CAR_HOSTNAME_FG='210;210;210'
+export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
+
+export GBT_CAR_DIR_BG='default'
+export GBT_CAR_DIR_FORMAT='─({{ Dir }})'
+export GBT_CAR_DIR_FG='189;174;147'
+
+export GBT_CAR_GIT_BG='default'
+export GBT_CAR_GIT_FORMAT='─( {{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }} )'
+export GBT_CAR_GIT_FG='210;210;210'
+
+export GBT_CAR_CUSTOM_FG='6;153;221'
+export GBT_CAR_CUSTOM_BG='default'
+export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
+export GBT_CAR_CUSTOM_TEXT_TEXT='└─'
+export GBT_CAR_CUSTOM_WRAP='1'
+
+export GBT_CAR_TIME_BG='default'
+export GBT_CAR_TIME_TIME_FORMAT='15:04'
+export GBT_CAR_TIME_FORMAT='[{{ Time }}]'
+export GBT_CAR_TIME_FG='152;195;121'
+
+export GBT_CAR_KUBECTL_FORMAT='({{ Cluster }}|{{ Namespace }})─'
+export GBT_CAR_KUBECTL_BG='default'
+export GBT_CAR_KUBECTL_FG='210;210;210'
+export GBT_CAR_KUBECTL_DISPLAY='0'
+
+export GBT_CAR_SIGN_FG='152;195;121'
+PROMPT='$(gbt $?)'
+#RPROMPT='$(gbt -right)'
+
+ps1min () {
+	RPROMPT=""
+	export GBT_CARS_KUBECTL_DISPLAY='0'
+	export GBT_CAR_DIR_DISPLAY='0'
+	export GBT_CAR_TIME_DISPLAY='0'
+	export GBT_CAR_HOSTNAME_DISPLAY='0'
+}
+ps1max () {
+	RPROMPT='$(gbt -right)'
+	export GBT_CARS_KUBECTL_DISPLAY='1'
+	export GBT_CAR_DIR_DISPLAY='1'
+	export GBT_CAR_TIME_DISPLAY='1'
+	export GBT_CAR_HOSTNAME_DISPLAY='1'
+}
+
+

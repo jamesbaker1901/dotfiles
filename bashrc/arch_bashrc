@@ -1,0 +1,153 @@
+source $HOME/.alias.sh
+
+function dbash {
+	docker exec -it $(docker ps -aqf "name=$1") /bin/bash
+}
+
+
+export GOPS1_CTX=false
+# switch aws and kubectl region/context, etc
+sr(){
+    export GOPS1_CTX=true
+    if [ -n "$1" ]; then
+        case "$1" in
+        dev)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=dev
+        ;;
+        test)
+        REGION="us-west-2"
+        CONTEXT=test
+        PROFILE=test
+	VPNFILE=test
+        ;;
+        tools|tool)
+        REGION="us-west-2"
+        CONTEXT="tools"
+        PROFILE="tools"
+	VPNFILE="tools"
+        ;;
+        prod)
+        REGION="us-west-2"
+        CONTEXT=prod
+        PROFILE=prod
+	VPNFIL=prod-us
+        ;;
+        prod-us)
+        REGION="us-west-2"
+        PROFILE=prod
+        CONTEXT=prod
+	VPNFILE=prod-us
+        ;;
+        prod-eu)
+        REGION="eu-central-1"
+        PROFILE=prod-eu
+        CONTEXT=prod-eu
+	VPNFILE=prod-eu
+        ;;
+        rancher2)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=rancher2
+        ;;
+        off|none)
+        export GOPS1_CTX=false
+	unset AWS_PROFILE
+	unset AWS_DEFAULT_REGION
+	unset AWS_SDK_LOAD_CONFIG
+	if [ -z "$VPNFILE" ]; then
+		:
+	else
+		if [ "$(nmcli con | grep tun)" ]; 
+		then
+	    		nmcli con down id "$VPNFILE" &> /dev/null
+			return
+		else
+			:
+			return
+		fi
+	fi
+        ;;
+        esac
+    fi
+
+    export AWS_DEFAULT_REGION=$REGION
+    export AWS_PROFILE=$PROFILE
+
+    if [ -n "$2" ];
+    then
+        NAMESPACE=${2}
+        kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
+        kubectl config use-context $CONTEXT &>/dev/null
+	if [ "$(nmcli con | grep tun)" ];
+	then
+		nmcli con down id "$(nmcli con | grep vpn | grep -v -- "--" | awk '{print $1}')" &> /dev/null
+		sleep 1
+	fi
+	nmcli con up id "$VPNFILE" &> /dev/null
+    else
+        if [ -n "$NAMESPACE" ]; then
+               NAMESPACE=""
+        fi
+        kubectl config use-context $CONTEXT &>/dev/null
+	if [ "$(nmcli con | grep tun)" ];
+	then
+		nmcli con down id "$(nmcli con | grep vpn | grep -v -- "--" | awk '{print $1}')" &> /dev/null
+		sleep 1
+	fi
+	nmcli con up id "$VPNFILE" &> /dev/null
+    fi
+    
+}
+
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+# default PS1
+#PS1='(\u:\h), \W, '
+
+#Fancy PS1#
+#PS1='\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)\n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$ '
+
+# Simple PS1
+#PS1='(\u:\h), \W, '
+
+alias ps1min='export GOPS1_MINIMAL=true'
+alias ps1max='unset GOPS1_MINIMAL'
+export GOPS1_PWD_DEPTH=5
+# Set PS1
+new_ps1 () {
+        PS1="$(gops1 $?)"
+}
+PROMPT_COMMAND=new_ps1
+
+EDITOR="vim"
+
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+export PATH=$PATH:/home/jay/bin
+export PATH=$PATH:/home/jay/go/bin
+source ~/.env
+eval "$(hub alias -s)"

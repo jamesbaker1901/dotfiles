@@ -1,0 +1,230 @@
+#
+# ~/.bashrc
+#
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+        source /etc/profile.d/vte.sh
+fi
+
+#=================================#
+#=========personal alias==========#
+#=================================#
+
+##pacman stuff
+alias update='sudo apt update && sudo apt -y upgrade'
+alias ins='sudo apt -y install'
+alias remove='sudo apt remote'
+
+##nah uh uh, you didn't say the magic word :)
+alias please='sudo $(fc -nl -1)'
+alias sv='sudo vim'
+
+#SystemD
+alias sd='sudo systemctl'
+alias daemon-reload='sudo systemctl daemon-reload'
+
+##reboot, logout, etc.
+alias rbt='sudo shutdown -r now'
+alias shutdown='sudo shutdown now'
+
+##Startup scripts
+alias bashrc='vim ~/.bashrc'
+alias sbash='source /home/jay/.bashrc'
+alias xrc='vim /home/jay/.xinitrc'
+alias crc='vim /home/jay/.conkyrc'
+alias i3rc='vim /home/jay/.config/i3/config'
+alias vimrc='vim ~/.vimrc'
+
+#i3 stuff
+alias wallpaper='feh --bg-scale'
+alias wp='feh --bg-scale ~/Pictures/Wallpaper/b6nuP3o.png'
+#Hashicorp
+alias pac='~/bin/packer'
+alias pacval='~/bin/packer validate -var-file=variables.json'
+alias pacbuild='~/bin/packer build -var-file=variables.json'
+alias tf='~/bin/terraform'
+alias tfp='~/bin/terraform plan'
+alias tfa='~/bin/terraform apply'
+
+#Openstack
+alias osrc-sas='source ~/.openstack/sas-openrc'
+alias osrc-admin='source ~/.openstack/admin-openrc'
+
+#Other
+alias ll='exa -bghl --git'
+alias la='exa -bghla --git'
+alias lt='exa -T'
+
+function tfip {
+  instance="aws_instance.$1"
+  terraform show | grep -A 40 "$instance" | grep "public_ip =" | sed "s/  public_ip = //"
+}
+
+#Docker
+alias docker='sudo docker'
+alias dps='docker ps -a'
+# Remove all unused images
+alias imageclean='docker rmi $(docker images | grep none | sed "s/[ ]* /:/g" | cut -f3 -d:)'
+# Remove unused volumes
+alias volclean='docker volume prune'
+# Stop all containers
+alias dstop='docker stop $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all containers
+alias drm='docker rm $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all stopped containers
+alias drm-stopped='docker rm $(docker ps -f "status=exited" | cut -f1 -d " " | grep -v CONTAINER)'
+
+
+function dbash {
+	docker exec -it $(docker ps -aqf "name=$1") /bin/bash
+}
+
+
+# Hardware
+alias mouse='sudo ltunify unpair mouse && sudo ltunify pair'
+
+## change directory and copy commands
+alias ..='cd ..'
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias rsm='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files'
+alias rcopy='rsync --partial --progress --append --rsh=ssh -r -h'
+alias ls='ls --color=auto'
+alias bin='cd /usr/local/bin'
+alias godev='cd ~/go/src/github.com/jamesbaker1901/'
+
+#passwords
+alias pj='pass -c bnl/jay.baker'
+
+#ssh
+alias sshconf='vim ~/.ssh/config'
+alias catpub='cat ~/.ssh/id_rsa.pub'
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+# default PS1
+#PS1='(\u:\h), \W, '
+
+#Old Fancy PS1#
+#PS1='\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)\n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$ '
+
+#function _update_ps1() {
+#    if [[ $? == 0 ]]; 
+#    then dollar='\n\[\e[38;5;15m\]\[\e[48;5;236m\] \\$'; 
+#    else dollar='\n\[\e[38;5;15m\]\[\e[7;49;31m\] \\$'; 
+#    fi
+#    post='\[\e[0m\]\[\e[38;5;236m\]\[\e[0m\]'
+#    x=$(echo $dollar$post)
+#    PS1="$(powerline-shell $?)"
+#}
+
+#if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
+#    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+#fi
+
+#source $HOME/bin/git-prompt.sh
+
+# Creates the bash_prompt function
+#bash_prompt () {
+#        ps1_top_bracket='\[\e[0;36m\]┌─'
+#        ps1_line='\[\e[0m\]\[\e[0;36m\]─'
+#        ps1_bottom_bracket='\[\e[0;36m\]└─'
+#        ps1_time='\[\e[1;32m\][\A]'
+#        ps1_space='\[\033[00m\] '
+#        ps1_pwd='\[\e[0;93m\](\w)'
+#        ps1_user_host='\[\e[1;37m\][\u@\h]'
+#        ps1_user='\[\e[1;37m\][\u]'
+#
+#        gitcheck_branch="$(git branch &>/dev/null; if [ $? -eq 0 ]; then echo "yes"; else echo "no"; fi)"
+#        if [ $gitcheck_branch == "yes" ];
+#        then
+#                gitcheck_status="$(git status | grep "nothing to commit" > /dev/null 2>&1; if [ $? -eq 0 ]; then echo "clean"; else echo "unclean"; fi)"
+#                if [ $gitcheck_status == "clean" ];
+#                then
+#                        git_prompt='\[\033[0;32m\]$(__git_ps1)'
+#                else
+#                        git_prompt='\[\033[0;31m\]$(__git_ps1)'
+#                fi
+#        else
+#                git_prompt=""
+#        fi
+#
+#        if [ -z $CONTEXT ]; then
+#                ctx_display=""
+#        elif [[ -n $CONTEXT && -z $NAMESPACE ]]; then
+#                ctx_display="(${CONTEXT})${ps1_line}"
+#        elif [[ -n $CONTEXT && -n $NAMESPACE ]]; then
+#                ctx_display="(${CONTEXT}|${NAMESPACE})${ps1_line}"
+#        fi
+#
+#        if [[ $? == 0 ]]; then
+#                ps1_dollar='\[\033[0;32m\]$'
+#        else 
+#                ps1_dollar='\[\033[0;31m\]$' 
+#        fi
+#        
+#        PS1="${ps1_top_bracket}${ps1_user}${ps1_line}${ps1_pwd}${git_prompt}\n${ps1_bottom_bracket}${ctx_display}${ps1_time}${ps1_dollar}${ps1_space}"
+#}
+
+alias ps1min='export GOPS1_MINIMAL=true'
+alias ps1max='unset GOPS1_MINIMAL'
+
+new_ps1 () {
+	PS1="$(gops1 $?)"
+}
+
+#PROMPT_COMMAND=bash_prompt
+PROMPT_COMMAND=new_ps1
+
+## Environment Variables
+EDITOR="vim"
+
+#
+# extract script: just type extract *, where * is a compressed file
+#
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+## change directory, then list files
+cdls(){
+    builtin cd "$@"
+    if [[ $(ls | wc -l) -gt 60 ]] ; then 
+        echo -e "\E[1;38;5;125m(too many files)\E[0m"
+    else
+        ls
+    fi
+}
+
+
+
+export HISTCONTROL=ignorespace
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/home/jay/go/bin/:/home/jay/bin
+eval "$(hub alias -s)"
+export PATH=$PATH:$HOME/node_modules/.bin
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/home/jay/goland/bin
+export TERM=xterm-256color
+export EDITOR=vim
+

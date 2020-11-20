@@ -1,0 +1,53 @@
+[theme]
+name = "slick"
+[theme.overrides]
+idle_bg = "#2C323B"
+idle_fg = "#d2d2d2"
+info_bg = "#0699DD"
+info_fg = "#2C323B"
+good_bg = "#98C379"
+good_fg = "#2C323B"
+warning_bg = "#fe8019"
+warning_fg = "#2C323B"
+critical_bg = "#fb4934"
+critical_fg = "#2C323B"
+
+[icons]
+name = "awesome"
+
+[[block]]
+block = "pacman"
+interval = 10
+
+[[block]]
+block = "music"
+player = "spotify"
+buttons = ["prev", "play", "next"]
+marquee = true
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{Mup}%"
+format_swap = "{SUp}%"
+
+[[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
+block = "battery"
+interval = 10
+
+[[block]]
+block = "temperature"
+interval = 10
+
+[[block]]
+block = "time"
+interval = 60
+#format = "%h %d %Y%t%H:%M:%S"
+format = "%h %d %H:%M:%S"

@@ -1,0 +1,241 @@
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_CTYPE=UTF-8
+export SHELL=/usr/bin/zsh
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
+
+# Prompt
+autoload -U promptinit
+promptinit
+setopt PROMPT_SUBST
+setopt TRANSIENT_RPROMPT
+
+# Other options
+setopt rmstarsilent
+setopt interactivecomments
+
+# Keybinding
+bindkey -e
+bindkey '^i' expand-or-complete-prefix
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
+bindkey "${terminfo[kcbt]}" reverse-menu-complete
+bindkey "${terminfo[kdch1]}" delete-char
+autoload -U select-word-style
+select-word-style bash
+
+# Auto-completion
+autoload -U compinit
+compinit
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' menu select
+
+# alias
+source $HOME/.alias.sh
+
+# env vars
+source ~/.env
+
+EDITOR="vim"
+
+export PATH=$PATH:/home/jay/bin
+export PATH=$PATH:/home/jay/go/bin
+eval "$(hub alias -s)"
+eval "$(zoxide init zsh)"
+
+setopt COMPLETE_ALIASES
+
+zshcache_time="$(date +%s%N)"
+
+autoload -Uz add-zsh-hook
+
+#PROMPT_COMMAND='source /home/jay/.config/ctxman/env'
+
+#precmd() { eval "$PROMPT_COMMAND" }
+
+rehash_precmd() {
+  if [[ -a /var/cache/zsh/pacman ]]; then
+    local paccache_time="$(date -r /var/cache/zsh/pacman +%s%N)"
+    if (( zshcache_time < paccache_time )); then
+      rehash
+      zshcache_time="$paccache_time"
+    fi
+  fi
+}
+
+add-zsh-hook -Uz precmd rehash_precmd
+
+exit_zsh() { exit }
+zle -N exit_zsh
+bindkey '^D' exit_zsh
+
+export GBT__HOME='/usr/share/gbt'
+source $GBT__HOME/sources/gbts/cmd/local.sh
+
+#alias docker='gbt_docker'
+#alias ssh='gbt_ssh'
+
+export GBT_CARS='Dir, Git, Custom, Sign'
+# export GBT_RCARS='Kubectl'
+export GBT_SEPARATOR=""
+export GBT_BEGINNING_TEXT=
+export GBT_BEGINNING_FG='6;153;221'
+
+export GBT_CAR_OS_BG='default'
+export GBT_CAR_OS_FORMAT='{{ Symbol }} '
+export GBT_CAR_OS_FG='210;210;210'
+
+export GBT_CAR_HOSTNAME_BG='default'
+export GBT_CAR_HOSTNAME_FG='210;210;210'
+export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
+
+export GBT_CAR_DIR_BG='default'
+export GBT_CAR_DIR_FORMAT='{{ Dir }} '
+export GBT_CAR_DIR_FG='189;174;147'
+export GBT_CAR_DIR_DEPTH='3'
+
+export GBT_CAR_GIT_BG='default'
+export GBT_CAR_GIT_FORMAT='{{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }}'
+export GBT_CAR_GIT_FG='210;210;210'
+
+export GBT_CAR_CUSTOM_FG='6;153;221'
+export GBT_CAR_CUSTOM_BG='default'
+export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
+export GBT_CAR_CUSTOM_TEXT_TEXT=''
+export GBT_CAR_CUSTOM_WRAP='1'
+
+export GBT_CAR_SIGN_FG='152;195;121'
+export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
+
+PROMPT='$(gbt $?)'
+
+
+# fzf
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
+# switch aws and kubectl region/context, etc
+sr () {
+    if [ -n "$1" ]; then
+        case "$1" in
+        dev)
+        REGION="us-west-2"
+        PROFILE="dev"
+        CONTEXT="dev"
+        ;;
+        test)
+        REGION="us-west-2"
+        CONTEXT="test"
+        PROFILE="test"
+	VPNFILE="test"
+        ;;
+        tools|tool)
+        REGION="us-west-2"
+        CONTEXT="tools"
+        PROFILE="tools"
+	VPNFILE="tools"
+        ;;
+        prod)
+        REGION="us-west-2"
+        CONTEXT="prod"
+        PROFILE="prod"
+	VPNFIL="prod-us"
+        ;;
+        prod-us)
+        REGION="us-west-2"
+        PROFILE="prod"
+        CONTEXT="prod"
+	VPNFILE="prod-us"
+        ;;
+        prod-eu)
+        REGION="eu-central-1"
+        PROFILE="prod-eu"
+        CONTEXT="prod-eu"
+	VPNFILE="prod-eu"
+        ;;
+        off|none)
+	unset AWS_PROFILE
+	unset AWS_DEFAULT_REGION
+	export GBT_CAR_KUBECTL_DISPLAY='0'
+	unset AWS_SDK_LOAD_CONFIG
+#	if [ -z "$VPNFILE" ]; then
+#		:
+#	else
+#		if [ "$(nmcli con | grep tun)" ]; 
+#		then
+#	    		nmcli con down id "$VPNFILE" &> /dev/null
+#			return
+#		else
+#			:
+#			return
+#		fi
+#	fi
+        ;;
+        esac
+    fi
+
+    export AWS_DEFAULT_REGION=$REGION
+    export AWS_PROFILE=$PROFILE
+
+    if [ -n "$2" ];
+    then
+        NAMESPACE=${2}
+        kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
+        kubectl config use-context $CONTEXT &>/dev/null
+	export GBT_CAR_KUBECTL_DISPLAY='1'
+#	if [ "$(nmcli con | grep tun)" ];
+#	then
+#		nmcli con down id "$(nmcli con | grep vpn | grep -v -- "--" | awk '{print $1}')" &> /dev/null
+#		sleep 1
+#	fi
+#	nmcli con up id "$VPNFILE" &> /dev/null
+    else
+        if [ -n "$NAMESPACE" ]; then
+               NAMESPACE=""
+        fi
+        kubectl config use-context $CONTEXT &>/dev/null
+	export GBT_CAR_KUBECTL_DISPLAY='1'
+#	if [ "$(nmcli con | grep tun)" ];
+#	then
+#		nmcli con down id "$(nmcli con | grep vpn | grep -v -- "--" | awk '{print $1}')" &> /dev/null
+#		sleep 1
+#	fi
+#	nmcli con up id "$VPNFILE" &> /dev/null
+    fi
+}
+
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }

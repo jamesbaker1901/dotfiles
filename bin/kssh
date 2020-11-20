@@ -1,0 +1,65 @@
+#!/bin/bash
+
+if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+	TARGET="$1"
+elif [[ "$1" == *"compute.internal"* ]]; then
+	TARGET="$1"
+elif [[ "$1" =~ "i-"* ]]; then
+	instance=$(aws ec2 describe-instances --instance-ids $1 --query "Reservations[].Instances[].PrivateIpAddress" | jq -r .["0"])
+	if [[ "$instance" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+		TARGET="$instance"
+	else
+		echo "Can't get the IP address for EC2 instance $1"
+		echo "sry ..."
+		echo "bye"
+		exit 1
+	fi
+else 
+	pod=$(echo $1 | sed 's/po\///')
+	node=$(kubectl get pod -o wide $pod | tail -1 | awk '{print $7}')
+	echo $node
+	if [[ "$node" ==  *"compute.internal"*  ]]; then
+		TARGET="$node"
+	else
+		echo "can't parse $1"
+		echo "kssh accepts only pod names, ec2 internal dns names, or valid IPv4 addresses"
+		echo "bye"
+		exit 1
+	fi
+fi
+
+CONTEXT="$(kubectl config current-context)"
+case "$CONTEXT" in
+	test)
+		KEY='~/.ssh/us-west-2-test.pem'
+	;;
+	dev)
+		KEY='~/.ssh/us-west-2-dev.pem'
+	;;
+	tools)
+		KEY='~/.ssh/us-west-2-internal-tools.pem'
+	;;
+	prod-eu)
+		KEY='~/.ssh/eu-central-1-prod.pem'
+	;;
+	prod-us)
+		KEY='~/.ssh/us-west-2-prod.pem'
+	;;
+	prod)
+		KEY='~/.ssh/us-west-2-prod.pem'
+	;;
+	prod-ap)
+		KEY='~/.ssh/ap-southeast-2-prod.pem'
+	;;
+	*)
+		echo "no key for $CONTEXT"
+		echo "k bye"
+		exit 1
+esac
+
+echo "Connecting to $TARGET"
+echo "Environment: $CONTEXT"
+echo "Using ssh private key: $KEY"
+
+ssh -i "$KEY" -o StrictHostKeyChecking=no core@"$TARGET"
+

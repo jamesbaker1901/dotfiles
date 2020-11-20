@@ -1,0 +1,40 @@
+#!/bin/bash
+if [[ "$1" =~ *"@"* ]]; then
+    SOURCE="$1"
+    DEST="$2"
+
+else
+    DEST="$2"
+    SOURCE="$1"
+fi
+
+CONTEXT="$(kubectl config current-context)"
+case "$CONTEXT" in
+	test)
+		KEY='~/.ssh/us-west-2-test.pem'
+	;;
+	tools)
+		KEY='~/.ssh/us-west-2-internal-tools.pem'
+	;;
+	dev)
+		KEY='~/.ssh/us-west-2-dev.pem'
+	;;
+	prod-eu)
+		KEY='~/.ssh/eu-central-1-prod.pem'
+	;;
+	prod-us)
+		KEY='~/.ssh/us-west-2-prod.pem'
+	;;
+	prod)
+		KEY='~/.ssh/us-west-2-prod.pem'
+	;;
+	prod-ap)
+		KEY='~/.ssh/ap-southeast-2-prod.pem'
+	;;
+	*)
+		echo "no key for $CONTEXT"
+		echo "k bye"
+		exit 1
+esac
+
+echo "rsync -avzhP -e \"ssh -i ${KEY}\" ${SOURCE} ${DEST}"

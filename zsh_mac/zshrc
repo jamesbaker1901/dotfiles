@@ -1,0 +1,166 @@
+# env
+source ~/.env
+
+# alias
+source $HOME/.alias.sh
+
+# path
+export PATH=$PATH:/Users/jbaker/bin:/Users/jbaker/go/bin:/usr/local/sbin:/usr/local/opt:/Users/jbaker/Library/Python/3.8/bin
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
+
+# Prompt
+autoload -U promptinit
+promptinit
+setopt PROMPT_SUBST
+setopt TRANSIENT_RPROMPT
+
+# Other options
+setopt rmstarsilent
+setopt interactivecomments
+
+# Keybinding
+bindkey -e
+bindkey '^i' expand-or-complete-prefix
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
+bindkey "${terminfo[kcbt]}" reverse-menu-complete
+bindkey "${terminfo[kdch1]}" delete-char
+autoload -U select-word-style
+select-word-style bash
+
+# Auto-completion
+autoload -U compinit
+compinit
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' menu select
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_COMPLETION_TRIGGER=','
+
+# zoxide
+eval "$(zoxide init zsh)"
+
+# hub cli, github client
+eval "$(hub alias -s)"
+
+setopt COMPLETE_ALIASES
+
+exit_zsh() { exit }
+zle -N exit_zsh
+bindkey '^D' exit_zsh
+
+export GBT_CARS='Dir, Git, Custom, Sign'
+# export GBT_RCARS='Kubectl'
+export GBT_SEPARATOR=""
+export GBT_BEGINNING_TEXT=
+export GBT_BEGINNING_FG='6;153;221'
+
+# export GBT_CAR_OS_BG='default'
+# export GBT_CAR_OS_FORMAT='{{ Symbol }} '
+# export GBT_CAR_OS_FG='210;210;210'
+
+export GBT_CAR_HOSTNAME_BG='default'
+export GBT_CAR_HOSTNAME_FG='210;210;210'
+export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
+
+export GBT_CAR_DIR_BG='default'
+export GBT_CAR_DIR_FORMAT='{{ Dir }} '
+# nord export GBT_CAR_DIR_FG='94;129;172'
+# ayu_dark export GBT_CAR_DIR_FG='57;186;230'
+export GBT_CAR_DIR_FG='152;195;121'
+export GBT_CAR_DIR_DEPTH='3'
+
+export GBT_CAR_GIT_BG='default'
+export GBT_CAR_GIT_FORMAT='{{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }}'
+export GBT_CAR_GIT_FG='210;210;210'
+
+export GBT_CAR_CUSTOM_FG='6;153;221'
+export GBT_CAR_CUSTOM_BG='default'
+export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
+export GBT_CAR_CUSTOM_TEXT_TEXT=''
+export GBT_CAR_CUSTOM_WRAP='1'
+
+export GBT_CAR_SIGN_FG='152;195;121'
+# ayu_dark export GBT_CAR_SIGN_FG='194;217;76'
+# nordexport GBT_CAR_SIGN_FG='143;188;187'
+export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
+
+
+PROMPT='$(gbt $?)'
+# RPROMPT='$(gbt -right)'
+# switch region
+sr () {
+    if [ -n "$1" ]; then
+        case "$1" in
+        dev)
+        REGION="us-west-2"
+	PROFILE="developers"
+        CONTEXT="dev"
+        ;;
+        staging)
+        REGION="us-west-2"
+        CONTEXT="staging"
+        ;;
+        prisma)
+        REGION="us-west-2"
+        CONTEXT="prisma"
+        ;;
+        off|none)
+	unset AWS_PROFILE
+	unset AWS_DEFAULT_REGION
+	# export GBT_CAR_KUBECTL_DISPLAY='0'
+	unset AWS_SDK_LOAD_CONFIG
+        ;;
+        esac
+    fi
+
+    export AWS_SDK_LOAD_CONFIG=true
+    export AWS_DEFAULT_REGION=$REGION
+    export AWS_PROFILE=$PROFILE
+
+    if aws sts get-caller-identity &>/dev/null;
+    then
+	    :
+    else
+	    #expectsts "$(gpg --decrypt $HOME/.secret/pword.asc 2>/dev/null)" "$PROFILE" "$REGION"
+	    vault_get_sts_token -r $PROFILE -r $REGION
+    fi
+
+    if [ -n "$2" ];
+    then
+        NAMESPACE=${2}
+	kubie ctx "$CONTEXT" -n "$NAMESPACE"
+        # kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
+        # kubectl config use-context $CONTEXT &>/dev/null
+	# export GBT_CAR_KUBECTL_DISPLAY='1'
+    else
+        if [ -n "$NAMESPACE" ]; then
+               NAMESPACE=""
+        fi
+	kubie ctx "$CONTEXT"
+        kubectl config use-context $CONTEXT &>/dev/null
+	# export GBT_CAR_KUBECTL_DISPLAY='1'
+    fi
+}
+source <(kubectl completion zsh)
+source "$HOME/.kubectl_fzf.plugin.zsh"
+# OPS config
+export OPS_DIR="$HOME/.ops"
+export PATH="$HOME/.ops/bin:$PATH"

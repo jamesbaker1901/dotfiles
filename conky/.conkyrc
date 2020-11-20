@@ -1,0 +1,86 @@
+######################
+# - Conky settings - #
+######################
+update_interval 1
+total_run_times 0
+net_avg_samples 1
+cpu_avg_samples 1
+
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+
+#####################
+# - Text settings - #
+#####################
+use_xft yes
+xftfont Sans:size=12
+override_utf8_locale yes
+text_buffer_size 2048
+
+#############################
+# - Window specifications - #
+#############################
+own_window_class Conky
+own_window yes
+own_window_type override
+#own_window_type desktop
+own_window_argb_visual yes
+own_window_argb_value 255
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+#
+alignment top_right
+gap_x 40
+gap_y 40
+minimum_size 300 550
+maximum_width 550
+default_bar_size 550 8
+
+
+#out_to_x no
+#own_window no
+#out_to_console yes
+#background no
+#max_text_width 0
+#########################
+# - Graphics settings - #
+#########################
+draw_shades no
+
+default_color cccccc
+
+color0 white
+color1 E07A1F
+color2 white
+
+
+TEXT
+Kernel: ${alignr} ${execi 3600 uname -r | sed "s@.fc.*.x86_64@@g" | sed "s@+debug@@g"}
+Uptime: ${alignr}${uptime}
+
+CPU1: ${cpu cpu1}%${alignr}CPU2: ${cpu cpu2}%
+CPU3: ${cpu cpu3}%${alignr}CPU4: ${cpu cpu4}%
+Temp: ${alignr}${acpitemp}°C
+
+Memory: ${mem} ${alignr}${membar 8,60}
+Disk: ${diskio}${alignr}${diskiograph 8,60 F57900 FCAF3E}
+Battery: ${battery_percent BAT0}% ${alignr}${battery_bar 8,60 BAT0}
+
+# Processes
+Processes: ${alignr}$processes
+Highest: ${alignr 40}CPU${alignr}RAM
+${voffset -11.5}${hr 1}
+${voffset -4}${top name 1} ${alignr}${top cpu 1}${alignr}${top mem 1}
+${voffset -1}${top name 2} ${alignr}${top cpu 2}${alignr}${top mem 2}
+${voffset -1}${top name 3} ${alignr}${top cpu 3}${alignr}${top mem 3}
+${voffset -1}${top name 4} ${alignr}${top cpu 4}${alignr}${top mem 4}
+
+${voffset -3}SSID: ${alignr}${wireless_essid wlp3s0}
+${voffset -3}Local IP: ${alignr}${addr wlp3s0}
+${voffset -3}External IP: ${alignr}${execi 600 curl https://icanhazip.com}
+
+${voffset -3}hal:${alignr}${execi 600 pingtest hal.jay-baker.com}
+${voffset -3}helper:${alignr}${execi 600 pingtest jay-baker.com}
+${voffset -3}feelthebern:${alignr}${execi 600 pingtest feelthebern.org}
+

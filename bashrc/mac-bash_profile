@@ -1,0 +1,280 @@
+#~/.bash_profile
+
+##nah uh uh, you didn't say the magic word :)
+alias please='sudo $(fc -nl -1)'
+alias sv='sudo vim'
+alias htop='sudo htop'
+
+##reboot, logout, etc.
+alias rbt='sudo shutdown -r now'
+alias shutdown='sudo shutdown now'
+
+##Startup scripts
+alias bashrc='vim ~/.bash_profile'
+alias sbash='source $HOME/.bash_profile'
+alias vimrc='vim ~/.vimrc'
+
+#Hashicorp
+alias pac='~/bin/packer'
+alias pacval='~/bin/packer validate -var-file=variables.json'
+alias pacbuild='~/bin/packer build -var-file=variables.json'
+alias tf='~/bin/terraform'
+alias tfp='~/bin/terraform plan'
+alias tfa='~/bin/terraform apply'
+
+#mac stuff
+alias htop='sudo htop'
+alias openvpn='sudo openvpn'
+alias ovpn='sudo openvpn'
+
+
+#git
+alias gitclean="git remote prune origin && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -d"
+
+gcp(){
+  ticket="$1"
+  scope="$2"
+  msg="$3"
+  ticketURL="https://skuidify.atlassian.net/browse/$ticket"
+  branch=$(__git_ps1 | tr -d '()')
+  echo "Did you bump the version?!?!"
+  git add .
+  git commit -m "fix($scope): $branch" -m "$msg" -m "$ticketURL"
+  git push --set-upstream origin $branch
+}
+
+#buffalo
+alias b='buffalo'
+
+#Other
+alias ll='exa -bghHliS'
+alias la='exa -bghHliSa'
+alias lt='exa -T'
+
+function tfip {
+  instance="aws_instance.$1"
+  terraform show | grep -A 40 "$instance" | grep "public_ip =" | sed "s/  public_ip = //"
+}
+
+#Docker
+alias dps='docker ps -a'
+# Remove all unused images
+alias imageclean='docker rmi $(docker images | grep none | sed "s/[ ]* /:/g" | cut -f3 -d:)'
+# Remove unused volumes
+alias volclean='docker volume prune'
+# Stop all containers
+alias dstop='docker stop $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all containers
+alias drm='docker rm $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all stopped containers
+alias drm-stopped='docker rm $(docker ps -f "status=exited" | cut -f1 -d " " | grep -v CONTAINER)'
+
+
+function dbash {
+	docker exec -it $(docker ps -aqf "name=$1") /bin/bash
+}
+
+
+
+## change directory and copy commands
+alias ..='cd ..'
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias rsm='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files'
+alias rcopy='rsync --partial --progress --append --rsh=ssh -r -h'
+alias godev='cd ~/go/src/github.com/jamesbaker1901/'
+
+#passwords
+#alias pj='pass -c bnl/jay.baker'
+
+#ssh
+alias sshconf='vim ~/.ssh/config'
+alias catpub='cat ~/.ssh/id_rsa.pub'
+
+alias ps1min='export GOPS1_MINIMAL=true'
+alias ps1max='unset GOPS1_MINIMAL'
+
+# Set PS1
+new_ps1 () {
+	PS1="$(gops1 $?)"
+	#PS1="$(/Users/jaybaker/go/src/github.com/jamesbaker1901/test/test $?)"
+}
+PROMPT_COMMAND=new_ps1
+
+# default PS1
+#PS1='(\u:\h), \W, '
+
+#Old Fancy PS1#
+#PS1='\[\e[0;36m\]â”Œâ”€\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]â”€\[\e[0;93m\](\w)\n\[\e[0;36m\]â””â”€\[\e[1;32m\][\A]\[\e[0m\]\$ '
+
+# extract script: just type extract *, where * is a compressed file
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+gp () {
+  ((test -n "$1" && test "$1" -ge 0) && \
+    openssl rand -base64 $1 | colrm $(expr $1 + 1)) 2>&-;
+}
+
+vpn(){
+	sudo openvpn --config /Users/jaybaker/.openvpn/"${1}".ovpn 
+}
+
+
+#kubernetes
+kubectl () {
+	if [ "$AWS_PROFILE" = "tools" ]; then
+		/usr/local/bin/kubectl "$@"
+	else
+		$HOME/bin/kubectl "$@"
+	fi
+}
+
+alias k="kubectl"
+alias kp="kubectl get pods"
+alias kd="kubectl describe"
+
+function kr {
+        admin="jay"
+        export POD_NAME=po/$admin-test
+        kubectl delete $POD_NAME
+        kubectl run -i --tty $admin-test --image="$1" --restart=Never -- /bin/sh
+        pod=$(kubectl get po | grep $admin-test | cut -f1 -d' ')
+        kubectl delete "$POD_NAME"
+}
+
+# switch aws and kubectl region/context, etc
+sr(){
+    export GOPS1_CTX=true
+    REGION=""
+    PROFILE=""
+    CONTEXT=""
+    NAMESPACE=""
+    if [ -n "$1" ]; then
+        case "$1" in
+        dev)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=dev
+        ;;
+        test)
+        REGION="us-west-2"
+        CONTEXT=test
+        PROFILE=test
+        ;;
+        tools|tool)
+        REGION="us-west-2"
+        CONTEXT="tools"
+        PROFILE="tools"
+        ;;
+        prod)
+        REGION="us-west-2"
+        CONTEXT=prod
+        PROFILE=prod
+        ;;
+        prod-us)
+        REGION="us-west-2"
+        PROFILE=prod
+        CONTEXT=prod
+        ;;
+        prod-eu)
+        REGION="eu-central-1"
+        PROFILE=prod-eu
+        CONTEXT=prod-eu
+        ;;
+        prod-ap)
+        REGION="ap-southeast-2"
+        PROFILE=prod-ap
+        CONTEXT=prod-ap
+        ;;
+        rancher2)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=rancher2
+        ;;
+        off|none)
+        export GOPS1_CTX=false
+        ;;
+        *)
+        REGION="us-west-2"
+        PROFILE=dev
+        CONTEXT=dev
+        ;;
+        esac
+    fi
+
+    if [ -z $PROFILE ]; then
+            PROFILE=dev
+            REGION="us-west-2"
+            CONTEXT=dev
+    fi
+
+    export AWS_DEFAULT_REGION=$REGION
+    export AWS_PROFILE=$PROFILE
+
+    if [ -n "$2" ];
+    then
+        NAMESPACE=${2}
+        kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
+        kubectl config use-context $CONTEXT &>/dev/null
+    else
+        if [ -n "$NAMESPACE" ]; then
+               NAMESPACE=""
+        fi
+        kubectl config use-context $CONTEXT &>/dev/null
+    fi
+}
+
+
+eval "$(hub alias -s)"
+
+
+# tmux stuff
+
+if [ -z "${TMUX}" ]; then
+	export TERM="xterm-256color"
+else
+	export TERM="screen-256color"
+fi
+
+export HISTCONTROL="ignorespace"
+export PATH="$HOME/bin:$PATH"
+export GOPATH="$HOME/go"
+export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/node_modules/.bin"
+export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
+export PATH="$PATH:$(brew --prefix openvpn)/sbin:$PATH"
+
+export EDITOR="vim"
+set -o vi
+bind '";;":vi-movement-mode'
+bind -m vi-insert "\C-l":clear-screen
+#kubectl autocomplete
+source <(kubectl completion bash)
+source /usr/local/etc/grc.bashrc
+# put necessary env vars in this file 
+source ~/.env
+
+export PATH="$HOME/.cargo/bin:$PATH"
+

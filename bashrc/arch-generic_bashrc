@@ -1,0 +1,177 @@
+#
+# ~/.bashrc
+#
+
+
+#=================================#
+#=========personal alias==========#
+#=================================#
+
+##pacman stuff
+alias update='packer -Syu --noconfirm --noedit'
+alias ins='packer -S'
+alias remove='sudo pacman -R'
+alias orphans='sudo pacman -Rns $(pacman -Qtdq)'
+
+##nah uh uh, you didn't say the magic word :)
+alias please='sudo $(fc -nl -1)'
+alias snano='sudo nano'
+alias sv='sudo vim'
+
+#SystemD
+alias sd='sudo systemctl'
+alias daemon-reload='sudo systemctl daemon-reload'
+
+##reboot, logout, etc.
+alias rbt='sudo shutdown -r now'
+alias shutdown='sudo shutdown now'
+
+##Startup scripts
+alias bashrc='vim ~/.bashrc'
+alias sbash='source /home/jay/.bashrc'
+alias xrc='vim /home/jay/.xinitrc'
+alias crc='vim /home/jay/.conkyrc'
+alias i3rc='vim /home/jay/.config/i3/config'
+alias vimrc='vim ~/.vimrc'
+
+#i3 stuff
+alias wallpaper='feh --bg-scale'
+alias wp='feh --bg-scale ~/Pictures/Wallpaper/b6nuP3o.png'
+#Hashicorp
+alias pac='~/bin/packer'
+alias pacval='~/bin/packer validate -var-file=variables.json'
+alias pacbuild='~/bin/packer build -var-file=variables.json'
+alias tf='~/bin/terraform'
+alias tfp='~/bin/terraform plan'
+alias tfa='~/bin/terraform apply'
+
+#Openstack
+alias osrc-sas='source ~/.openstack/sas-openrc'
+alias osrc-admin='source ~/.openstack/admin-openrc'
+
+#Other
+alias ll='exa -bghHliS'
+alias la='exa -bghHliSa'
+alias lt='exa -T'
+
+function tfip {
+  instance="aws_instance.$1"
+  terraform show | grep -A 40 "$instance" | grep "public_ip =" | sed "s/  public_ip = //"
+}
+
+#Docker
+alias docker='sudo docker'
+alias dps='docker ps -a'
+# Remove all unused images
+alias imageclean='docker rmi $(docker images | grep none | sed "s/[ ]* /:/g" | cut -f3 -d:)'
+# Remove unused volumes
+alias volclean='docker volume prune'
+# Stop all containers
+alias dstop='docker stop $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all containers
+alias drm='docker rm $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+# Remove all stopped containers
+alias drm-stopped='docker rm $(docker ps -f "status=exited" | cut -f1 -d " " | grep -v CONTAINER)'
+
+
+function dbash {
+	docker exec -it $(docker ps -aqf "name=$1") /bin/bash
+}
+
+
+# Hardware
+alias mouse='sudo ltunify unpair mouse && sudo ltunify pair'
+
+## change directory and copy commands
+alias ..='cd ..'
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias rsm='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files'
+alias rcopy='rsync --partial --progress --append --rsh=ssh -r -h'
+alias ls='ls --color=auto'
+alias bin='cd /usr/local/bin'
+alias godev='cd ~/go/src/github.com/jamesbaker1901/'
+
+#passwords
+alias pj='pass -c bnl/jay.baker'
+
+#ssh
+alias sshconf='vim ~/.ssh/config'
+alias catpub='cat ~/.ssh/id_rsa.pub'
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+# default PS1
+#PS1='(\u:\h), \W, '
+
+#Old Fancy PS1#
+#PS1='\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)\n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$ '
+
+function _update_ps1() {
+#    if [[ $? == 0 ]]; 
+#    then dollar='\n\[\e[38;5;15m\]\[\e[48;5;236m\] \\$'; 
+#    else dollar='\n\[\e[38;5;15m\]\[\e[7;49;31m\] \\$'; 
+#    fi
+#    post='\[\e[0m\]\[\e[38;5;236m\]\[\e[0m\]'
+#    x=$(echo $dollar$post)
+    PS1="$(powerline-shell $?)"
+}
+
+if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
+
+
+## Environment Variables
+EDITOR="vim"
+
+#
+# extract script: just type extract *, where * is a compressed file
+#
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+## change directory, then list files
+cdls(){
+    builtin cd "$@"
+    if [[ $(ls | wc -l) -gt 60 ]] ; then 
+        echo -e "\E[1;38;5;125m(too many files)\E[0m"
+    else
+        ls
+    fi
+}
+
+
+eval "$(hub alias -s)"
+
+export HISTCONTROL=ignorespace
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/home/jay/go/bin/:/home/jay/bin
+export PATH=$PATH:$HOME/node_modules/.bin
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/home/jay/goland/bin
+export TERM=xterm-256color
+export EDITOR=vim
+

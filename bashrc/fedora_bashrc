@@ -1,0 +1,195 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+##nah uh uh, you didn't say the magic word :)
+alias please='sudo $(fc -nl -1)'
+alias snano='sudo nano'
+alias sv='sudo vim'
+alias update='sudo dnf update'
+alias ins='sudo dnf -y install'
+alias remove='sudo dnf erase'
+##reboot, logout, etc.
+alias rbt='sudo shutdown -r now'
+alias shutdown='sudo shutdown now'
+
+#SystemD
+alias sd='sudo systemctl'
+alias daemon-reload='sudo systemctl daemon-reload'
+
+#Docker
+alias docker='sudo docker'
+alias dps='docker ps -a'
+alias imageclean='docker rmi $(docker images | grep none | sed "s/[ ]* /:/g" | cut -f4 -d:)'
+alias dstop='docker stop $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+alias drm='docker rm $(docker ps -a | cut -f1 -d " " | grep -v CONTAINER)'
+
+#Terraform
+alias tfp='terraform plan'
+alias tfa='terraform apply'
+alias tfs='terraform show'
+alias tfd='terraform destroy'
+
+#Jenkins
+alias jenkins='java -jar jenkins-cli.jar -s http://aws-lin-ncbp-jenkins.node.consul:8080'
+
+## start up scripts and config files
+alias bashrc='vim ~/.bashrc'
+alias sbash='source /home/jay/.bashrc'
+alias vimrc='vim ~/.vimrc'
+alias crc="vim ~/.conkyrc"
+alias irc="vim ~/.config/i3/config"
+alias sshconf="vim ~/.ssh/config"
+
+## change directory and copy commands
+alias ..='cd ..'
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias rsm='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files'
+alias rcopy='rsync --partial --progress --append --rsh=ssh -r -h'
+alias ls='ls --color=auto'
+
+## ssh stuff
+alias spr="rsync -avzP --rsh='sshpass -f /home/jay/.ssh/adpass ssh -l jay.baker'"
+alias sprr="rsync -avzP --rsh='sshpass -f /home/jay/.ssh/adrpass ssh -l root'"
+alias sshconf='vim /home/jay/.ssh/config'
+
+#password manager
+alias pj='pass -c ncbp/jbaker'
+alias pja='pass -c aws-ncbp/jbaker'
+alias catpub='cat /home/jay/.ssh/id_rsa.pub'
+alias pg='pass generate $1 $2'
+
+##KVM win8 stuff
+#alias win8start='sudo virsh start win8'
+#alias win8view='sudo virt-viewer -c qemu:///system win8'
+
+#vim all the things
+alias :q='exit'
+
+#grep
+alias hgrep="history | grep"
+alias ps?="ps aux | grep"
+
+#system info
+alias cmount="mount | column -t"
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+# Simple PS1
+#PS1='(\u:\h), \W, '
+
+source /usr/share/git-core/contrib/completion/git-prompt.sh
+
+bash_prompt () {
+
+gitcheck_branch="$(git branch &>/dev/null; if [ $? -eq 0 ]; then echo "yes"; else echo "no"; fi)"
+
+
+
+if [ $gitcheck_branch == "yes" ];
+then
+gitcheck_status="$(git status | grep "nothing to commit" > /dev/null 2>&1; if [ $? -eq 0 ]; then echo "clean"; else echo "unclean"; fi)"
+
+	if [ $gitcheck_status == "clean" ];
+	then
+		git_prompt='\[\e[0;36m\]─\[\033[0;32m\]$(__git_ps1 "(%s)")'
+	else
+		git_prompt='\[\e[0;36m\]─\[\033[0;31m\]$(__git_ps1 "(%s)")'
+	fi
+else
+	git_prompt=""
+fi
+
+PROMPT_DIRTRIM=5
+
+#PS1="\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)${git_prompt} \n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$(if [[ \$? == 0 ]]; then echo \"\[\033[0;32m\]$\"; else echo \"\[\033[0;31m\]$\"; fi)\[\033[00m\] "
+
+
+PS1="\[\e[0;36m\]┌─\[\e[1;37m\][\u@\h]\[\e[0m\]\[\e[0;36m\]─\[\e[0;93m\](\w)${git_prompt} \n\[\e[0;36m\]└─\[\e[1;32m\][\A]\[\e[0m\]\$(if [[ \$? == 0 ]]; then echo \"\[\033[0;32m\]$\"; else echo \"\[\033[0;31m\]$\"; fi)\[\033[00m\] "
+
+}
+
+
+# Fancy PS1
+
+PROMPT_COMMAND=bash_prompt
+
+#
+# extract function: just type extract *, where * is a compressed file
+#
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1       ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+#git push function
+
+gp () {
+comment="$1"
+git add . && git commit -m "${comment}" && git push --tags
+}
+
+## change directory, then list files
+cdls(){
+    builtin cd "$@"
+    if [[ $(ls | wc -l) -gt 60 ]] ; then
+        echo -e "\E[1;38;5;125m(too many files)\E[0m"
+    else
+        ls
+    fi
+}
+
+#Corporate bullshit generator
+bullshit () {
+curl -s http://cbsg.sourceforge.net/cgi-bin/live | grep -Eo '^<li>.*</li>' | sed s,\</\\?li\>,,g | shuf -n 1
+}
+
+
+#python
+ex () {
+n="$1"
+echo "#!/usr/bin/python3" > ex."${n}".py
+echo "# exercise ${n}" >> ex."${n}".py
+echo >> ex."${n}".py
+chmod u+x ex."${n}".py
+vim ex."${n}".py
+}
+
+md5check() { md5sum "$1" | grep "$2";}
+
+#hub: github git wrapper
+source /etc/bash_completion.d/hub.bash_completion.sh
+eval "$(hub alias -s)"
+
+export HISTCONTROL=ignorespace
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$HOME/go/bin
+export TERM=xterm-256color
+export EDITOR=vim
+
+#export NVM_DIR="/home/jay/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

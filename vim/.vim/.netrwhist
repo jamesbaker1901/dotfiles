@@ -1,0 +1,4 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/home/jay/Documents/spurs-sas/sas_code/conf'
+let g:netrw_dirhist_2='/home/jay/Documents/spurs-sas/scripts'
