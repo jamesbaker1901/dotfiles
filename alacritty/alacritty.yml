@@ -72,7 +72,7 @@ colors:
     cursor: '0xffffff'
 
   # Normal colors
-background_opacity: .30
+background_opacity: 0.3
 
 mouse_bindings:
   - {mouse: Middle, action: PasteSelection}

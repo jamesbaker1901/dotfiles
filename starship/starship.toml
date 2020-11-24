@@ -1,0 +1,40 @@
+add_newline = false
+prompt_order = [
+	"directory",
+	"git_branch",
+	"git_status",
+	"kubernetes",
+	"golang",
+	"line_break",
+	"cmd_duration",
+	"character",
+	]
+
+
+[character]      # The name of the module we are configuring is "character"
+symbol = "$"     # The "symbol" segment is being set to "➜"
+success_symbol = "[$](bold green)"
+error_symbolk = "[$}(bold red)]"
+
+[hostname]
+ssh_only = true
+prefix = "⟪"
+suffix = "⟫"
+disabled = false
+
+[golang]
+disabled = true
+
+[kubernetes]
+symbol = ""
+style = "dimmed green"
+disabled = true
+
+[time]
+disabled = false
+format = "[ %T ]"
+utc_time_offset = "-5"
+
+[aws]
+displayed_items = "profile"
+

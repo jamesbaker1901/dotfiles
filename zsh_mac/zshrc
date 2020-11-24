@@ -66,44 +66,44 @@ exit_zsh() { exit }
 zle -N exit_zsh
 bindkey '^D' exit_zsh
 
-export GBT_CARS='Dir, Git, Custom, Sign'
-# export GBT_RCARS='Kubectl'
-export GBT_SEPARATOR=""
-export GBT_BEGINNING_TEXT=
-export GBT_BEGINNING_FG='6;153;221'
+#export GBT_CARS='Dir, Git, Custom, Sign'
+## export GBT_RCARS='Kubectl'
+#export GBT_SEPARATOR=""
+#export GBT_BEGINNING_TEXT=
+#export GBT_BEGINNING_FG='6;153;221'
 
-# export GBT_CAR_OS_BG='default'
-# export GBT_CAR_OS_FORMAT='{{ Symbol }} '
-# export GBT_CAR_OS_FG='210;210;210'
+## export GBT_CAR_OS_BG='default'
+## export GBT_CAR_OS_FORMAT='{{ Symbol }} '
+## export GBT_CAR_OS_FG='210;210;210'
 
-export GBT_CAR_HOSTNAME_BG='default'
-export GBT_CAR_HOSTNAME_FG='210;210;210'
-export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
+#export GBT_CAR_HOSTNAME_BG='default'
+#export GBT_CAR_HOSTNAME_FG='210;210;210'
+#export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
 
-export GBT_CAR_DIR_BG='default'
-export GBT_CAR_DIR_FORMAT='{{ Dir }} '
-# nord export GBT_CAR_DIR_FG='94;129;172'
-# ayu_dark export GBT_CAR_DIR_FG='57;186;230'
-export GBT_CAR_DIR_FG='152;195;121'
-export GBT_CAR_DIR_DEPTH='3'
+#export GBT_CAR_DIR_BG='default'
+#export GBT_CAR_DIR_FORMAT='{{ Dir }} '
+## nord export GBT_CAR_DIR_FG='94;129;172'
+## ayu_dark export GBT_CAR_DIR_FG='57;186;230'
+#export GBT_CAR_DIR_FG='152;195;121'
+#export GBT_CAR_DIR_DEPTH='3'
 
-export GBT_CAR_GIT_BG='default'
-export GBT_CAR_GIT_FORMAT='{{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }}'
-export GBT_CAR_GIT_FG='210;210;210'
+#export GBT_CAR_GIT_BG='default'
+#export GBT_CAR_GIT_FORMAT='{{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }}'
+#export GBT_CAR_GIT_FG='210;210;210'
 
-export GBT_CAR_CUSTOM_FG='6;153;221'
-export GBT_CAR_CUSTOM_BG='default'
-export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
-export GBT_CAR_CUSTOM_TEXT_TEXT=''
-export GBT_CAR_CUSTOM_WRAP='1'
+#export GBT_CAR_CUSTOM_FG='6;153;221'
+#export GBT_CAR_CUSTOM_BG='default'
+#export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
+#export GBT_CAR_CUSTOM_TEXT_TEXT=''
+#export GBT_CAR_CUSTOM_WRAP='1'
 
-export GBT_CAR_SIGN_FG='152;195;121'
-# ayu_dark export GBT_CAR_SIGN_FG='194;217;76'
-# nordexport GBT_CAR_SIGN_FG='143;188;187'
-export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
+#export GBT_CAR_SIGN_FG='152;195;121'
+## ayu_dark export GBT_CAR_SIGN_FG='194;217;76'
+## nordexport GBT_CAR_SIGN_FG='143;188;187'
+#export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
 
 
-PROMPT='$(gbt $?)'
+#PROMPT='$(gbt $?)'
 # RPROMPT='$(gbt -right)'
 # switch region
 sr () {
@@ -164,3 +164,4 @@ source "$HOME/.kubectl_fzf.plugin.zsh"
 # OPS config
 export OPS_DIR="$HOME/.ops"
 export PATH="$HOME/.ops/bin:$PATH"
+eval "$(starship init zsh)"

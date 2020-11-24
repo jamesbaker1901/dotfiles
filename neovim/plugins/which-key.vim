@@ -15,19 +15,18 @@ let g:which_key_map['/'] = [ '<Plug>NERDCommenterToggle'        	, 'comment' ]
 let g:which_key_map['f'] = [ ':Files'                           	, 'search files' ]
 let g:which_key_map['h'] = [ '<C-W>s'                           	, 'split below']
 let g:which_key_map['S'] = [ ':Startify'                        	, 'start screen' ]
-let g:which_key_map['T'] = [ ':Rg'                              	, 'search text' ]
+let g:which_key_map['t'] = [ ':Rg'                              	, 'search text' ]
 let g:which_key_map['B'] = [ ':Buffers'                         	, 'search Buffers' ]
 let g:which_key_map['E'] = [ ':SSave'                           	, 'save session']
 let g:which_key_map['L'] = [ ':SLoad'                           	, 'load session']
 let g:which_key_map['l'] = [ ':Limelight!!'                     	, 'limelight']
 let g:which_key_map['z'] = [ ':Goyo'                            	, 'zen mode']
 let g:which_key_map['r'] = [ ':FloatermNew ranger'              	, 'ranger' ]
-let g:which_key_map['t'] = [ ':FloatermNew'                     	, 'terminal']
 let g:which_key_map['v'] = [ '<C-W>v'                           	, 'split right']
 
 " go stuff
-let g:which_key_map['b'] = [ ':FloatermNew --autoclose=1 --position=auto --height=10 --width=80 --title=gobuild go build', 'go build']
-
+autocmd FileType go let g:which_key_map['b'] = [ ':FloatermNew --autoclose=1 --position=auto --height=10 --width=80 --title=gobuild go build', 'go build']
+autocmd FileType go let g:which_key_map['d'] = [ ':CocList diagnostics'              	, 'diagnostics']
 
 " s is for search
 let g:which_key_map.s = {
@@ -68,6 +67,15 @@ let g:which_key_map.p = {
       \ 'm' : [':Tmuxline! ~/.tmux.lightline.snapshot', 'tmux snapshot'],
       \ 's' : [':source ~/.config/nvim/init.vim', 'source vimrc'],
       \ }
+
+" g is for git
+let g:which_key_map.g = {
+      \ 'name' : '+git' ,
+      \ 'a' : [':Git add .'                , 'add .'],
+      \ 'c' : [':Git commit'               , 'commit'],
+      \ 'p' : [':Git push'                 , 'push'],
+      \ }
+
 
 
 " Register which key map

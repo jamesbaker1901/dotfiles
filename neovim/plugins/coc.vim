@@ -1,5 +1,5 @@
 " coc.vim settings
-" set cmdheight=2 	" Better display for messages
+"set cmdheight=2 	" Better display for messages
 set updatetime=300 	" Smaller updatetime for CursorHold & CursorHoldI
 set shortmess+=c 	" don't give |ins-completion-menu| messages.
 set signcolumn=yes 	" always show signcolumns

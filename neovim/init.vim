@@ -16,7 +16,7 @@ Plug 'scrooloose/nerdtree'             " file browswer
 Plug 'jpalardy/vim-slime'              " send commands to tmux
 Plug 'Xuyuanp/nerdtree-git-plugin'     " NERDTree git status
 Plug 'sheerun/vim-polyglot' 		       " syntax checking
-Plug 'preservim/nerdcommenter'            " easily comment out code
+Plug 'preservim/nerdcommenter'         " easily comment out code
 Plug 'dhruvasagar/vim-table-mode'      " edit markdown tables more easily
 
 " General
@@ -81,7 +81,7 @@ filetype off                    " Reset filetype detection first ...
 filetype plugin indent on       " ... and enable filetype detection
 filetype plugin on
 set ttyfast                     " Indicate fast terminal conn for faster redraw
-set mouse=a 			" enable mouse
+set mouse=a 			              " enable mouse
 set laststatus=2                " Show status line always
 set encoding=utf-8              " Set default encoding to UTF-8
 set autoread                    " Automatically read changed files
