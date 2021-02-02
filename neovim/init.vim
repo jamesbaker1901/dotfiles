@@ -27,7 +27,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'voldikss/vim-floaterm' 		       " floating terminal popup
 Plug 'airblade/vim-rooter' 		         " ensure fzf and rg stay in project scope for search
 Plug 'mhinz/vim-startify' 		         " vim start menu
-"Plug 'justinmk/vim-sneak' 		         " jump to any localtion specified by two characters
+Plug 'justinmk/vim-sneak' 		         " jump to any localtion specified by two characters
 Plug 'junegunn/goyo.vim' 		           " zen mode
 Plug 'junegunn/limelight.vim' 		     " highlight current section
 Plug 'unblevable/quick-scope' 		     " quickly jump to char on line
@@ -36,7 +36,8 @@ Plug 'haya14busa/is.vim' 		           " remove highlight after search
 Plug 'wfxr/minimap.vim' 	 	           " adds code minimap to right of screen like Sublime Text
 Plug 'edkolev/tmuxline.vim'
 Plug 'tpope/vim-surround' 		         " adds ability to surround objects with quotes
-Plug 'easymotion/vim-easymotion'       " easily move around the document
+Plug 'github.com/mileszs/ack.vim'      " allows ack use within vim
+"Plug 'easymotion/vim-easymotion'       " easily move around the document
 
 " Editing
 Plug 'jeffkreeftmeijer/vim-numbertoggle'      " toggles relative or static line nums
@@ -69,6 +70,8 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'sheerun/vim-wombat-scheme'
 Plug 'hzchirs/vim-material'
 Plug 'Ardakilic/vim-tomorrow-night-theme'
+Plug 'victorze/foo'
+Plug 'chriskempson/base16-vim'
 call plug#end()
 
 " general options and settings
@@ -121,7 +124,7 @@ command! W :w
 autocmd InsertEnter * norm zz
 
 "next buffer
-noremap <C-j> :bn<CR> 
+noremap <C-j> :bn<CR>
 "previous buffer
 noremap <C-k> :bp<CR>
 "close buffer
@@ -171,15 +174,17 @@ source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/startify.vim
 source ~/.config/nvim/plugins/which-key.vim
 source ~/.config/nvim/plugins/git-gutter.vim
-source ~/.config/nvim/plugins/easy-motion.vim
 source ~/.config/nvim/plugins/airline.vim
 source ~/.config/nvim/plugins/floaterm.vim
+source ~/.config/nvim/plugins/vim-sneak.vim
 
 " Theme
 set termguicolors
 "let ayucolor="dark"
-colorscheme deus
+colorscheme base16-onedark
 set showtabline=2
+let g:airline_theme='base16'
+
 
 " force transparent vim background
 hi Normal guibg=NONE ctermbg=NONE

@@ -32,7 +32,6 @@ alias alrc='vim ~/.config/alacritty/alacritty.yml'
 #alias vimrc='vim ~/.vimrc'
 alias vimrc='vim ~/.config/nvim/init.vim'
 alias Xrc='vim ~/.Xdefaults'
-alias alacrittyrc='vim ~/.config/alacritty/alacritty.yml'
 
 # change directory and copy commands
 alias ..='cd ..'
@@ -51,7 +50,8 @@ alias cat='bat'
 
 # git
 alias gp='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
-alias gpr='git pull-request -r seanmcrum,blardo,tpayne1'
+alias gpmr='git push -o merge_request.create --set-upstream origin $(git symbolic-ref --short HEAD)'
+alias gclean=' git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d'
 
 # Docker
 alias dps='docker ps -a'
@@ -96,7 +96,8 @@ alias htop='sudo htop'
 alias openvpn='sudo openvpn'
 #alias ovpn='sudo openvpn'
 
-# ssh
+# clipboard stuff
 alias catpub='cat ~/.ssh/id_rsa.pub | pbcopy'
+alias copy="cat $1 | pbcopy"
 
 source ~/.ripple_env

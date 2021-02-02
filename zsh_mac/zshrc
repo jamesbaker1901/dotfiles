@@ -102,6 +102,9 @@ bindkey '^D' exit_zsh
 ## nordexport GBT_CAR_SIGN_FG='143;188;187'
 #export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
 
+alcs () {
+    alacritty-colorscheme -a /Users/jbaker/.config/alacritty/colors/"$1".yaml
+}
 
 #PROMPT='$(gbt $?)'
 # RPROMPT='$(gbt -right)'
@@ -160,8 +163,11 @@ sr () {
     fi
 }
 source <(kubectl completion zsh)
+#export KUBECONFIG=$(kubectl ripple kubeconfig):$KUBECONFIG
 source "$HOME/.kubectl_fzf.plugin.zsh"
 # OPS config
 export OPS_DIR="$HOME/.ops"
+
 export PATH="$HOME/.ops/bin:$PATH"
+export PATH="/usr/local/opt/util-linux/bin:$PATH"
 eval "$(starship init zsh)"

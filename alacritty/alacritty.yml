@@ -1,4 +1,4 @@
-# Configuration for Alacritty, the GPU enhanced terminal emulator.
+background_opacity: 0.95
 
 env:
   TERM: xterm-256color
@@ -23,7 +23,7 @@ font:
     #family: GohuFont Nerd Font 
     family: Hasklug Nerd Font
     style: Regular
-  size: 15.0
+  size: 16.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -38,41 +38,50 @@ font:
 draw_bold_text_with_bright_colors: true
 
 colors:
-  # COLORSCHEME: deus.yaml
+  # COLORSCHEME: /Users/jbaker/.config/alacritty/colors/one_dark.yaml
   # Default colors
   primary:
     # hard contrast: background = '0x1d2021'
-    background: '0x242a32'
-    foreground: '0xd2d2d2'
+    background: '0x1e2127'
+    foreground: '0xabb2bf'
 
   # Normal colors
   normal:
-    black: '0x2C323B'
-    red: '0xfb4934'
-    green: '0xbdae93'
-    yellow: '0xebdbb2'
-    blue: '0x83a598'
-    magenta: '0xC678DD'
-    cyan: '0x8ec07c'
-    white: '0xd2d2d2'
+  # Bright colors
+    black: '0x1e2127'
+    red: '0xe06c75'
+    green: '0x98c379'
+    yellow: '0xd19a66'
+    blue: '0x61afef'
+    magenta: '0xc678dd'
+    cyan: '0x56b6c2'
+    white: '0xabb2bf'
 
   # Bright colors
   bright:
-    black: '0x3c3836'
-    red: '0xfb4934'
-    green: '0x98C379'
-    yellow: '0xfabd2f'
-    blue: '0x83a598'
-    magenta: '0xC678DD'
-    cyan: '0x8ec07c'
-    white: '0xd2d2d2'
+    black: '0x5c6370'
+    red: '0xe06c75'
+    green: '0x98c379'
+    yellow: '0xd19a66'
+    blue: '0x61afef'
+    magenta: '0xc678dd'
+    cyan: '0x56b6c2'
+    white: '0xffffff'
   indexed_colors: []
   cursor:
-    text: '0x1d1f21'
-    cursor: '0xffffff'
+    background: '0xf0f0f0'
+    foreground: '0x26282a'
 
   # Normal colors
-background_opacity: 0.3
+  dim:
+    black: '0x31363b'
+    red: '0x783228'
+    green: '0x17a262'
+    yellow: '0xb65619'
+    blue: '0x1b668f'
+    magenta: '0x614a73'
+    cyan: '0x186c60'
+    white: '0x63686d'
 
 mouse_bindings:
   - {mouse: Middle, action: PasteSelection}
