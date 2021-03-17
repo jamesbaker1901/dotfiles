@@ -1,5 +1,4 @@
 # bash
-alias bash='/usr/local/Cellar/bash/5.0.18/bin/bash'
 
 # nah uh uh, you didn't say the magic word :)
 alias please='sudo $(fc -nl -1)'
@@ -28,6 +27,7 @@ alias xrc='vim ~/.xinitrc'
 alias crc='vim ~/.conkyrc'
 alias i3rc='vim ~/.config/i3/config'
 alias alrc='vim ~/.config/alacritty/alacritty.yml'
+alias tmrc='vim ~/.tmux.conf'
 
 #alias vimrc='vim ~/.vimrc'
 alias vimrc='vim ~/.config/nvim/init.vim'
@@ -46,7 +46,7 @@ alias ls='exa'
 alias ll='exa -bghl'
 alias la='exa -bghla'
 alias lt='exa -T'
-alias cat='bat'
+alias cat='bat --theme="base16-256"'
 
 # git
 alias gp='git push --set-upstream origin $(git symbolic-ref --short HEAD)'

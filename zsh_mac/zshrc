@@ -106,30 +106,34 @@ alcs () {
     alacritty-colorscheme -a /Users/jbaker/.config/alacritty/colors/"$1".yaml
 }
 
+alop () {
+    sed -i .bak "s/^background_opacity: *.*/background_opacity: ${1}/" $HOME/.config/alacritty/alacritty.yml
+}
+
 #PROMPT='$(gbt $?)'
 # RPROMPT='$(gbt -right)'
-# switch region
-sr () {
+kc () {
     if [ -n "$1" ]; then
         case "$1" in
         dev)
-        REGION="us-west-2"
-	PROFILE="developers"
-        CONTEXT="dev"
+        REGION="us-east-1"
+	      PROFILE="developers"
+        CONTEXT="eks_eng-dev_developer"
         ;;
         staging)
         REGION="us-west-2"
-        CONTEXT="staging"
+        PROFILE="platform-staging-admin"
+        CONTEXT="eks_ripplenet-staging_admin"
         ;;
-        prisma)
-        REGION="us-west-2"
-        CONTEXT="prisma"
+        prod)
+        REGION="eu-west-2"
+        CONTEXT="eks_ripplenet-prod_admin"
+        PROFILE="ripplenet-prod-admin"
         ;;
-        off|none)
-	unset AWS_PROFILE
-	unset AWS_DEFAULT_REGION
-	# export GBT_CAR_KUBECTL_DISPLAY='0'
-	unset AWS_SDK_LOAD_CONFIG
+        rnc)
+        REGION="eu-west-2"
+        CONTEXT="eks_rnc-prod"
+        PROFILE="ripplenet-xcurrent-prod-admin"
         ;;
         esac
     fi
@@ -142,32 +146,33 @@ sr () {
     then
 	    :
     else
-	    #expectsts "$(gpg --decrypt $HOME/.secret/pword.asc 2>/dev/null)" "$PROFILE" "$REGION"
-	    vault_get_sts_token -r $PROFILE -r $REGION
+      #expectsts "$(gpg --decrypt $HOME/.secret/pword.asc 2>/dev/null)" "$PROFILE" "$REGION"
+	    vault_get_sts_token -r $PROFILE --region $REGION
     fi
 
     if [ -n "$2" ];
     then
         NAMESPACE=${2}
-	kubie ctx "$CONTEXT" -n "$NAMESPACE"
-        # kubectl config set-context $CONTEXT --namespace $NAMESPACE &>/dev/null
-        # kubectl config use-context $CONTEXT &>/dev/null
-	# export GBT_CAR_KUBECTL_DISPLAY='1'
+	      kubie ctx "$CONTEXT" -n "$NAMESPACE" 
     else
         if [ -n "$NAMESPACE" ]; then
                NAMESPACE=""
         fi
-	kubie ctx "$CONTEXT"
-        kubectl config use-context $CONTEXT &>/dev/null
-	# export GBT_CAR_KUBECTL_DISPLAY='1'
+	      kubie ctx "$CONTEXT" 
     fi
+    unset AWS_SDK_LOAD_CONFIG
+    unset AWS_DEFAULT_REGION
+    unset AWS_PROFILE
+
 }
+
+alias kns="kubie ns"
+
 source <(kubectl completion zsh)
-#export KUBECONFIG=$(kubectl ripple kubeconfig):$KUBECONFIG
 source "$HOME/.kubectl_fzf.plugin.zsh"
 # OPS config
 export OPS_DIR="$HOME/.ops"
 
 export PATH="$HOME/.ops/bin:$PATH"
-export PATH="/usr/local/opt/util-linux/bin:$PATH"
+export PATH="/usr/local/opt/util-linux/bin:/usr/local/Cellar/bash/5.1.4/bin:$PATH"
 eval "$(starship init zsh)"

@@ -18,6 +18,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'     " NERDTree git status
 Plug 'sheerun/vim-polyglot' 		       " syntax checking
 Plug 'preservim/nerdcommenter'         " easily comment out code
 Plug 'dhruvasagar/vim-table-mode'      " edit markdown tables more easily
+Plug 'ryanoasis/vim-devicons'          " adds dev icons
 
 " General
 Plug '907th/vim-auto-save'
@@ -36,12 +37,10 @@ Plug 'haya14busa/is.vim' 		           " remove highlight after search
 Plug 'wfxr/minimap.vim' 	 	           " adds code minimap to right of screen like Sublime Text
 Plug 'edkolev/tmuxline.vim'
 Plug 'tpope/vim-surround' 		         " adds ability to surround objects with quotes
-Plug 'github.com/mileszs/ack.vim'      " allows ack use within vim
-"Plug 'easymotion/vim-easymotion'       " easily move around the document
 
 " Editing
 Plug 'jeffkreeftmeijer/vim-numbertoggle'      " toggles relative or static line nums
-Plug 'liuchengxu/vim-which-key'
+Plug 'liuchengxu/vim-which-key'               " popup keybindings menu
 
 " DSLs
 Plug 'hashivim/vim-terraform'
@@ -70,8 +69,9 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'sheerun/vim-wombat-scheme'
 Plug 'hzchirs/vim-material'
 Plug 'Ardakilic/vim-tomorrow-night-theme'
-Plug 'victorze/foo'
 Plug 'chriskempson/base16-vim'
+Plug 'wadackel/vim-dogrun'
+Plug 'zacanger/angr.vim'
 call plug#end()
 
 " general options and settings
@@ -181,21 +181,23 @@ source ~/.config/nvim/plugins/vim-sneak.vim
 " Theme
 set termguicolors
 "let ayucolor="dark"
-colorscheme base16-onedark
+let base16colorspace=256  " Access colors present in 256 colorspace
+"colorscheme base16-onedark
+colors deus
 set showtabline=2
-let g:airline_theme='base16'
+let g:airline_theme='deus'
 
 
 " force transparent vim background
 hi Normal guibg=NONE ctermbg=NONE
 
-let g:tmuxline_powerline_separators = 1
+let g:tmuxline_powerline_separators = 0
 let g:tmuxline_preset = {
-	\ 'a': '#S',
+	\ 'a': ' #S',
         \ 'win': '#I #W',
         \ 'cwin': '#I #W',
-	\ 'y': '#(spotify status artist) - #(spotify status track)',
-        \ 'z': '%d %b %H:%M',
+	\ 'y': '#(spotify status artist) - #(spotify status track) ',
+        \ 'z': '#(date -u "+%%H:%%M:%%S") UTC 﨟',
         \ 'options': {
         \'status-justify': 'left'}
 	\}

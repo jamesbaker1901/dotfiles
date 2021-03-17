@@ -76,7 +76,33 @@ let g:which_key_map.g = {
       \ 'p' : [':Git push'                 , 'push'],
       \ }
 
+" c is for coc
+let g:which_key_map.c = { 
+      \ 'name' : '+coc' ,
+      \ 'e' : [ ':CocList extensions', 'CocList extensions'],
+      \ 'm' : [ ':CocList marketplace', 'CocList marketplace'],
+      \ 'c' : [ ':CocList commands', 'CocList commands'],
+      \ 'o' : [ ':CocList outline', 'CocList outline'],
+      \ 's' : [':CocList -I symbols', 'CocList -I symbols'],
+      \ 'j' : [ ':CocNext', 'CocNext'],
+      \ 'k' : [ ':CocPrev', 'CocPrev'],
+      \ 'p' : [':CocListResume', 'CocListResume'],
+      \ }
 
+ "Manage extensions
+"nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+ "Show commands
+"nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+ "Find symbol of current document
+"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+ "Search workspace symbols
+"nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+ "Do default action for next item.
+"nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+ "Do default action for previous item.
+"nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+ "Resume latest coc list
+"nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " Register which key map
 call which_key#register(',', "g:which_key_map")

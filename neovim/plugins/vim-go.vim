@@ -11,6 +11,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
+let g:go_metalinter_autosave = 0
 autocmd BufWritePre *.go :GoImports
 autocmd BufWritePre *.go :GoMetaLinter
 

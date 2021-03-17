@@ -4,32 +4,42 @@ format = """\
 	$directory\
 	$git_branch\
 	$git_status\
-	$kubernetes\
-	$golang\
+	$aws\
 	$line_break\
+	$kubernetes\
 	$cmd_duration\
 	$character\
 """
 
-[character]      # The name of the module we are configuring is "character"
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
-vicmd_symbol = "[V](bold green) "
+[directory]
+format = "[$path]($style)[$read_only]($read_only_style) "
+truncate_to_repo = true
+truncation_length = 8
 
-[hostname]
-ssh_only = true
-prefix = "⟪"
-suffix = "⟫"
-disabled = false
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = ""
+style = "purple"
 
-[golang]
-disabled = true
-
-[kubernetes]
-symbol = ""
-style = "dimmed green"
-disabled = false
+[character]
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+vicmd_symbol = "[](bold green) "
 
 [aws]
-displayed_items = "profile"
+format = "[$symbol$region|$profile]($style) "
+style = "blue"
+symbol = " "
+[aws.region_aliases]
+us-east-1 = "use1"
+us-west-2 = "usw2"
+eu-west-2 = "euw2"
+
+[kubernetes]
+symbol = "ﴱ "
+style = "green"
+disabled = false
+format = "[$symbol$context|$namespace]($style) "
+[kubernetes.context_aliases]
+"eks_eng-dev_developer" = "dev"
 
