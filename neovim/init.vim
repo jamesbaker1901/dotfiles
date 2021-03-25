@@ -4,9 +4,10 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Language Support
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " LSP support
+"Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " LSP support
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
+Plug 'neovim/nvim-lspconfig'
 
 " Coding help
 Plug 'Raimondi/delimitMate'            " auto-close delimiters
@@ -19,6 +20,14 @@ Plug 'sheerun/vim-polyglot' 		       " syntax checking
 Plug 'preservim/nerdcommenter'         " easily comment out code
 Plug 'dhruvasagar/vim-table-mode'      " edit markdown tables more easily
 Plug 'ryanoasis/vim-devicons'          " adds dev icons
+Plug 'kosayoda/nvim-lightbulb'         " display a lightbulb when code actions are possible a la vscode
+Plug 'nvim-lua/completion-nvim'        " code completion
+Plug 'nvim-lua/lsp-status.nvim'        " lsp status
+Plug 'nvim-lua/diagnostic-nvim'        " lsp diagnostic info
+Plug 'sbdchd/neoformat'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " better highlighing using treesitter
+Plug 'hrsh7th/vim-vsnip'               " snippets
+Plug 'hrsh7th/vim-vsnip-integ'         " snippets
 
 " General
 Plug '907th/vim-auto-save'
@@ -110,6 +119,11 @@ set nocursorcolumn              " Do not highlight column (speeds up highlightin
 set nocursorline                " Do not highlight cursor (speeds up highlighting)
 set lazyredraw                  " Wait to redraw
 set clipboard=unnamed  		      " Use system clipboard
+set updatetime=300
+set completeopt=menuone
+set completeopt+=noinsert
+set completeopt-=preview
+set shortmess+=c
 syntax on
 
 "general remaps
@@ -168,7 +182,7 @@ augroup END
 match Todo /\s\+$/
 
 source ~/.config/nvim/plugins/fzf.vim
-source ~/.config/nvim/plugins/coc.vim
+"source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/vim-go.vim
 source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/startify.vim
@@ -177,6 +191,7 @@ source ~/.config/nvim/plugins/git-gutter.vim
 source ~/.config/nvim/plugins/airline.vim
 source ~/.config/nvim/plugins/floaterm.vim
 source ~/.config/nvim/plugins/vim-sneak.vim
+
 
 " Theme
 set termguicolors
@@ -191,6 +206,7 @@ let g:airline_theme='deus'
 " force transparent vim background
 hi Normal guibg=NONE ctermbg=NONE
 
+" tmux 
 let g:tmuxline_powerline_separators = 0
 let g:tmuxline_preset = {
 	\ 'a': ' #S',
@@ -201,3 +217,24 @@ let g:tmuxline_preset = {
         \ 'options': {
         \'status-justify': 'left'}
 	\}
+
+" Loads lua config
+lua require('init')
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" vsnips stuff
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'

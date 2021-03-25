@@ -132,7 +132,7 @@ kc () {
         ;;
         rnc)
         REGION="eu-west-2"
-        CONTEXT="eks_rnc-prod"
+        CONTEXT="eks_rnc-prod_admin"
         PROFILE="ripplenet-xcurrent-prod-admin"
         ;;
         esac
