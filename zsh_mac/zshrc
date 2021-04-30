@@ -66,42 +66,6 @@ exit_zsh() { exit }
 zle -N exit_zsh
 bindkey '^D' exit_zsh
 
-#export GBT_CARS='Dir, Git, Custom, Sign'
-## export GBT_RCARS='Kubectl'
-#export GBT_SEPARATOR=""
-#export GBT_BEGINNING_TEXT=
-#export GBT_BEGINNING_FG='6;153;221'
-
-## export GBT_CAR_OS_BG='default'
-## export GBT_CAR_OS_FORMAT='{{ Symbol }} '
-## export GBT_CAR_OS_FG='210;210;210'
-
-#export GBT_CAR_HOSTNAME_BG='default'
-#export GBT_CAR_HOSTNAME_FG='210;210;210'
-#export GBT_CAR_HOSTNAME_FORMAT='{{ User }}]'
-
-#export GBT_CAR_DIR_BG='default'
-#export GBT_CAR_DIR_FORMAT='{{ Dir }} '
-## nord export GBT_CAR_DIR_FG='94;129;172'
-## ayu_dark export GBT_CAR_DIR_FG='57;186;230'
-#export GBT_CAR_DIR_FG='152;195;121'
-#export GBT_CAR_DIR_DEPTH='3'
-
-#export GBT_CAR_GIT_BG='default'
-#export GBT_CAR_GIT_FORMAT='{{ Icon }} {{ Head }} {{ Status }}{{ Ahead }}{{ Behind }}'
-#export GBT_CAR_GIT_FG='210;210;210'
-
-#export GBT_CAR_CUSTOM_FG='6;153;221'
-#export GBT_CAR_CUSTOM_BG='default'
-#export GBT_CAR_CUSTOM_FORMAT='{{ Text }}'
-#export GBT_CAR_CUSTOM_TEXT_TEXT=''
-#export GBT_CAR_CUSTOM_WRAP='1'
-
-#export GBT_CAR_SIGN_FG='152;195;121'
-## ayu_dark export GBT_CAR_SIGN_FG='194;217;76'
-## nordexport GBT_CAR_SIGN_FG='143;188;187'
-#export GBT_CAR_SIGN_FORMAT='{{ Symbol }} '
-
 alcs () {
     alacritty-colorscheme -a /Users/jbaker/.config/alacritty/colors/"$1".yaml
 }
@@ -110,15 +74,18 @@ alop () {
     sed -i .bak "s/^background_opacity: *.*/background_opacity: ${1}/" $HOME/.config/alacritty/alacritty.yml
 }
 
-#PROMPT='$(gbt $?)'
-# RPROMPT='$(gbt -right)'
 kc () {
     if [ -n "$1" ]; then
         case "$1" in
-        dev)
+        eng-dev)
         REGION="us-east-1"
 	      PROFILE="developers"
         CONTEXT="eks_eng-dev_developer"
+        ;;
+        dev)
+        REGION="us-east-1"
+        PROFILE="developers"
+        CONTEXT="eks_dev1_developer"
         ;;
         staging)
         REGION="us-west-2"
