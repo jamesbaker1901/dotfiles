@@ -1,0 +1,12 @@
+{
+  "feat": {
+    "prefix": "feat",
+    "body": [
+      "feat(${1}): ${2} ${3}",
+      "",
+      "https://ripplelabs.atlassian.net/browse/${2}",
+      "${4}"
+    ],
+    "description": "feature"
+  }
+}

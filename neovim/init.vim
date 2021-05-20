@@ -46,6 +46,9 @@ Plug 'haya14busa/is.vim' 		           " remove highlight after search
 Plug 'wfxr/minimap.vim' 	 	           " adds code minimap to right of screen like Sublime Text
 Plug 'edkolev/tmuxline.vim'
 Plug 'tpope/vim-surround' 		         " adds ability to surround objects with quotes
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 " Editing
 Plug 'jeffkreeftmeijer/vim-numbertoggle'      " toggles relative or static line nums
@@ -182,7 +185,6 @@ augroup END
 match Todo /\s\+$/
 
 source ~/.config/nvim/plugins/fzf.vim
-"source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/vim-go.vim
 source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/startify.vim

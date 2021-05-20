@@ -1,0 +1,218 @@
+{
+  "go-struct": {
+    "prefix": "st",
+    "body": ["type ${1} struct {", "\t${2}", "}"],
+    "description": "struct"
+  },
+  "if-err-return": {
+    "prefix": "ifer",
+    "body": ["if err != nil {", "\t return err", "}"],
+    "description": "if err not nil return err"
+  },
+  "if-err": {
+    "prefix": "ife",
+    "body": ["if err != nil {", "\t${1}", "}"],
+    "description": "if err not nil"
+  },
+  "if-err-fperr-osexit1": {
+    "prefix": "ifefpo",
+    "body": ["if err != nil {", "\tfmt.Println(err)", "\tos.Exit(1)", "}"],
+    "description": "if err not nil, fp err, os exit"
+  },
+  "fmt-print-ln": {
+    "prefix": "fp",
+    "body": ["fmt.Println(${1})"],
+    "description": "fmt.Println()"
+  },
+  "fmt-print-f": {
+    "prefix": "fpf",
+    "body": ["fmt.Sprintf(\"${1}\", ${2})"],
+    "description": "fmt.Sprintf"
+  },
+  "log-error-msgf": {
+    "prefix": "lef",
+    "body": ["log.Error().Msgf(\"${1}: %v\\n\",", "\terr.Error())", ""],
+    "description": "log error msgf"
+  },
+  "if-err-log-and-return": {
+    "prefix": "ifelar",
+    "body": [
+      "if err != nil {",
+      "\tlogAndReturn(w, err, http.${1})",
+      "}",
+      "${2}"
+    ],
+    "descrption": "if err != nil, logAndReturn()"
+  },
+  "handler": {
+    "prefix": "handler",
+    "body": [
+      "// ${1} ... ",
+      "func ${1}(w http.ResponseWriter, r *http.Request) {",
+      "\t${2}",
+      "}"
+    ],
+    "description": "http handler func"
+  },
+  "decode-json": {
+    "prefix": "dj",
+    "body": ["decodeJSON(w, ${1})", "&${2}"],
+    "description": "decodeJSON(w, 1)"
+  },
+  "return-json": {
+    "prefix": "rj",
+    "body": ["returnJSON(w, ${1})"],
+    "description": "returnJSON(w, 1)"
+  },
+  "defer-close-body": {
+    "prefix": "dcb",
+    "body": ["defer close(r.Body)", "${1}"],
+    "description": "defer close(r.Body)"
+  },
+  "method": {
+    "prefix": "m",
+    "body": [
+      "// ${1} ... ",
+      "func (${2} *${3}) ${1}(${4}) error {",
+      "\t${5}",
+      "\treturn nil",
+      "}"
+    ],
+    "description": "method with comment"
+  },
+  "func": {
+    "prefix": "func",
+    "body": ["// ${1} ...", "func ${1}(${2}) ${3} {", "\t${4}", "}"],
+    "description": "func"
+  },
+  "resp": {
+    "prefix": "resp",
+    "body": ["resp, err := "],
+    "description": "resp, err := "
+  },
+  "switch": {
+    "prefix": "sw",
+    "body": ["switch ${1} {", "case ${2}:", "\t${3}", "}"],
+    "description": "switch"
+  },
+  "if": {
+    "prefix": "if",
+    "body": ["if ${1} {", "\t${2}", "}"],
+    "description": "if"
+  },
+  "append": {
+    "prefix": "app",
+    "body": ["${1} = append(${1}, ${2})"],
+    "description": "append"
+  },
+  "wg": {
+    "prefix": "wg",
+    "body": ["var wg sync.WaitGroup", "wg.Add(${1})", "${2}", "wg.Wait()"],
+    "description": "sync.WaitGroup"
+  },
+  "go-func": {
+    "prefix": "go",
+    "body": ["go func() {", "$\t{1}", "}()"],
+    "description": "go func()"
+  },
+  "return-nil": {
+    "prefix": "rnil",
+    "body": ["return nil"],
+    "description": "return nil"
+  },
+  "marshal": {
+    "prefix": "marshal",
+    "body": [
+      "// Marshal encodes the ${2} as JSON",
+      "func (${1} *${2}) Marshal() ([]byte, error) {",
+      "\tbytes, err := json.Marshal(${1})",
+      "\tif err != nil {",
+      "\t\treturn nil, err",
+      "\t}",
+      "\treturn bytes, nil",
+      "}"
+    ],
+    "description": "marshals object as json"
+  },
+  "unmarshal": {
+    "prefix": "unmarshal",
+    "body": [
+      "// UnMarshal decodes the submitted JSON bytes into ${2} object",
+      "func (${1} *${2}) UnMarshal(bytes []byte) error {",
+      "\terr := json.Unmarshal(bytes, d)",
+      "\tif err != nil {",
+      "\t\treturn err",
+      "\t}",
+      "\treturn nil",
+      "}"
+    ],
+    "description": "unmarshals json to object"
+  },
+  "print-json": {
+    "prefix": "pjson",
+    "body": [
+      "// PrintJSON prints the ${2} to stdout as un-formatted json",
+      "func (${1} *${2}) PrintJSON() error {",
+      "\tbytes, err := ${1}.Marshal()",
+      "\tif err != nil {",
+      "\t\treturn err",
+      "\t}",
+      "\tfmt.Println(string(bytes))",
+      "\treturn nil",
+      "}"
+    ],
+    "description": "prints object as json"
+  },
+  "pretty-print-json": {
+    "prefix": "ppjson",
+    "body": [
+      "// PrettyPrintJSON prints the ${2} to stdout as prettified json",
+      "func (${1} *${2}) PrettyPrintJSON() error {",
+      "\tbytes, err := ${1}.Marshal()",
+      "\tif err != nil {",
+      "\t\treturn err",
+      "\t}",
+      "",
+      "\tprettied := pretty.Pretty(bytes)",
+      "\tfmt.Println(string(pretty.Color(prettied, nil)))",
+      "",
+      "\treturn nil",
+      "}"
+    ],
+    "description": "prints object as pretty json"
+  },
+  "print-plain": {
+    "prefix": "pplain",
+    "body": [
+      "// PrintPlain prints the ${2} to stdout as plain text",
+      "func (${1} *${2}) PrintPlain() {",
+      "\tfmt.Printf(${3}, ${4})",
+      "}"
+    ],
+    "description": "prints object as plain text"
+  },
+  "cobra-command": {
+    "prefix": "cc",
+    "body": [
+      "var ${1}Cmd = &cobra.Command{",
+      "\tUse: \"${2}\",",
+      "\tShort: \"${3}\",",
+      "\tRun: func(cmd *cobra.Command, args []string) {",
+      "\t\t${4}",
+      "\t},",
+      "}"
+    ],
+    "description": "creates a new cobra command"
+  },
+  "new installbot client": {
+    "prefix": "nc",
+    "body": [
+      "c, err := client.NewClient(viper.GetString(\"installbot-client-url\"))",
+      "if err != nil {",
+      "\tfmt.Println(err)",
+      "\tos.Exit(1)",
+      "}"
+    ],
+    "description": "new installbot client"
+  }
+}
